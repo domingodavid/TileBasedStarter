@@ -33,8 +33,11 @@ public class MainPanel implements MouseListener  {
 		//setup the board
 		for(int r = 0; r < tiles.length; r++) {
 			for(int c = 0; c < tiles[r].length; c++) {
-				tiles[r][c] = new Tile("queen.png", r, c);				
 				
+				if(r<=1 || r>=6)
+					tiles[r][c] = new Tile("queen.png", r, c);				
+				else
+					tiles[r][c] = new Tile( r, c);
 				//add the title to the jFrame
 				f.add(tiles[r][c]);
 				
@@ -43,7 +46,7 @@ public class MainPanel implements MouseListener  {
 			}
 		}
 		
-		
+		tiles[0][0].setImage("carpic.png");
 		
 		
 		
@@ -52,13 +55,35 @@ public class MainPanel implements MouseListener  {
 		f.setVisible(true);
 	}
 
+	Tile prev = null;
+	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
+		
 		//On a click, figure out what tile was clicked
 		Tile theTile = (Tile) arg0.getComponent();
-		System.out.println(theTile.r);
+		if(prev == null) { //fiirst click, sets prev
+			prev = theTile;
+			prev.setEnabled(false);
+		}
+		else {
+			//check if this is a valid move?
+			//check row
+			if(Math.abs(prev.r-theTile.r)>2) {
+				prev.setEnabled(true);
+				prev = null;
+				return; //illeegal move!!!
+			}
+			
+			
+			
+			//second click means user is trying to swap
+			theTile.swap(prev);
+			prev = null;
+		}
+		
 		
 		
 	}
